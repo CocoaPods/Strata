@@ -53,7 +53,24 @@ begin
     title "Cloning the website repositories"
     clone_repos(repos)
   end
+  
+  # Task install_system_deps
+  #-----------------------------------------------------------------------------#
+  task :install_system_deps do
+    title "Installing application dependencies"
+    rakefile_repos.each do |dir|
+      Dir.chdir(dir) do
+        subtitle "Bootstrapping #{dir}"
+        if has_rake_task?('install_tools')
+          sh "rake --no-search install_tools"
+        end
+      end
+    end
 
+    disk_usage = `du -h -c -d 0`.split(' ').first
+    puts "\nDisk usage: #{disk_usage}"
+  end
+  
   # Task bootstrap_repos
   #-----------------------------------------------------------------------------#
 
@@ -72,6 +89,8 @@ begin
     disk_usage = `du -h -c -d 0`.split(' ').first
     puts "\nDisk usage: #{disk_usage}"
   end
+
+  
 
   # Task switch_to_ssh
   #-----------------------------------------------------------------------------#
@@ -324,10 +343,9 @@ def repos
 end
 
 # @return [Array<String>] All the directories that contains a Rakefile,
-#         except those in TEMPLATE_REPOS, which should be excluded
 #
 def rakefile_repos
-  Dir['*/Rakefile'].map { |file| File.dirname(file) } - TEMPLATE_REPOS
+  Dir['*/Rakefile'].map { |file| File.dirname(file) }
 end
 
 # @return [Array<String>]
@@ -424,7 +442,7 @@ end
 # Other Helpers
 #-----------------------------------------------------------------------------#
 
-# @return [Bool] Wether the Rakefile in the current working directory has a
+# @return [Bool] Whether the Rakefile in the current working directory has a
 #         task with the given name.
 #
 def has_rake_task?(task)
