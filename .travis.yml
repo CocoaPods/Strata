@@ -1,0 +1,6 @@
+language: objective-c
+
+env:
+  - RVM_RUBY_VERSION=system
+
+script: rake bootstrap
