@@ -8,6 +8,7 @@ WEB_REPOS = %w[
   search.cocoapods.org
   cocoapods.org
   blog.cocoapods.org
+  guides.cocoapods.org
   trunk.cocoapods.org
   cocoadocs.org
   trunk.cocoapods.org-api-doc
