@@ -315,11 +315,13 @@ def clone_repos(repos)
       puts "Already cloned"
     else
       sh "git clone #{url} #{name}"
-      
+
+      # Run the new repo's bundle install
       Dir.chdir(name) do
-        sh "bundle install"
+        Bundler.with_clean_env do 
+          system('bundle install')
+        end
       end
-    end
   end
 end
 
