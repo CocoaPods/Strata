@@ -220,7 +220,33 @@ begin
     end
   end
 
+  namespace :db do
 
+    desc "Create databases for web properties"
+    task :create do
+      title "Creating databases"
+      run_humus_rake_task("db:create")
+    end
+
+    desc "Drop databases for web properties"
+    task :drop do
+      title "Dropping databases"
+      run_humus_rake_task("db:drop")
+    end
+
+    desc "Reset databases for web properties"
+    task :reset do
+      title "Resetting reset"
+      run_humus_rake_task("db:reset")
+    end
+
+    desc "Migrate databases for web properties"
+    task :reset do
+      title "Performing migration"
+      run_humus_rake_task("db:migrate")
+    end
+
+  end
 
 rescue LoadError
   $stderr.puts "\033[0;31m" \
@@ -424,6 +450,15 @@ def changelog_for_repo(repo, version)
     relevant = lines[current_version_index..previous_version_index]
 
     relevant.join("\n").strip
+  end
+end
+
+def run_humus_rake_task(task)
+  if Dir.exists?("Humus")
+    Dir.chdir("Humus") do
+      sh 'rake ' + task + ' RACK_ENV=test'
+      sh 'rake ' + task + ' RACK_ENV=development'
+    end
   end
 end
 
