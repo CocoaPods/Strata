@@ -315,6 +315,10 @@ def clone_repos(repos)
       puts "Already cloned"
     else
       sh "git clone #{url}"
+      
+      Dir.chdir(name) do
+        sh "bundle install"
+      end
     end
   end
 end
