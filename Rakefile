@@ -13,7 +13,6 @@ WEB_REPOS = {
   'trunk.cocoapods.org-api-doc' => [],
   'metrics.cocoapods.org' => ['Humus'],
   'feeds.cocoapods.org' => [],
-  # 'shared_resources' => [],
   'Humus' => []
 }
 
@@ -60,11 +59,18 @@ begin
   #-----------------------------------------------------------------------------#
 
   desc "Clones the web repositories"
-  task :clone, :name do |name|
+  task :clone, :name do |task, args|
     repos = fetch_default_repos
-    repos = repos.find { |repo| repo['name'] == name } if name
-    title "Cloning the website repositories"
-    # clone_repos(repos)
+    if args.name
+      repos = [ repos.find { |repo| repo['name'] == args.name } ]
+    end
+    
+    if repos
+      title "Cloning the website repositories"
+      clone_repos(repos)
+    else 
+      title "Couldn not find the repo you were looking for"
+    end
   end
   
   # Task install_system_deps
@@ -103,7 +109,6 @@ begin
     puts "\nDisk usage: #{disk_usage}"
   end
 
-  
 
   # Task switch_to_ssh
   #-----------------------------------------------------------------------------#
