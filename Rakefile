@@ -319,9 +319,10 @@ def clone_repos(repos)
       # Run the new repo's bundle install
       Dir.chdir(name) do
         Bundler.with_clean_env do 
-          system('bundle install')
+          system 'bundle install'
         end
       end
+    end
   end
 end
 
