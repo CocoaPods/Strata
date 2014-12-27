@@ -241,7 +241,7 @@ begin
     end
 
     desc "Migrate databases for web properties"
-    task :reset do
+    task :migrate do
       title "Performing migration"
       run_humus_rake_task("db:migrate")
     end
