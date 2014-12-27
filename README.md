@@ -3,20 +3,47 @@ Strata
 
 Automate the tasks necessary to develop on the CocoaPods websites
 
+Strata requires having ruby 2.1.3 set up, there are many ways to set up a custom ruby. The CocoaPods development team uses both [rvm](https://rvm.io) and [rbenv](https://github.com/sstephenson/rbenv).
+
+Commands it offers:
+
 ```shell
   Strata · (master) ★  ⟩ rake -T
-  rake bootstrap:blog         # Clones the blog.cocoapods.org repository and its dependencies
-  rake bootstrap:cocoadocs    # Clones the cocoadocs.org repository and its dependencies
-  rake bootstrap:cocoapods    # Clones the cocoapods.org repository and its dependencies
-  rake bootstrap:feeds        # Clones the feeds.cocoapods.org repository and its dependencies
-  rake bootstrap:humus        # Clones the Humus repository and its dependencies
-  rake bootstrap:metrics      # Clones the metrics.cocoapods.org repository and its dependencies
-  rake bootstrap:search       # Clones the search.cocoapods.org repository and its dependencies
-  rake bootstrap:trunk        # Clones the trunk.cocoapods.org repository and its dependencies / Clones the trunk.cocoapods.org-api-doc repository and its dependencies
-  rake bootstrap_repos[name]  # Runs the Bootstrap task on all the repositories
-  rake clone[name]            # Clones the web repositories
-  rake issues                 # Gets the count of the open issues
-  rake pull                   # Pulls all the repositories & updates their submodules
-  rake spec                   # Run all specs of all the sites
-  rake switch_to_ssh          # Points the origin remote of all the git repos to use the SSH URL
-````
+  rake bootstrap[name]      # Runs the Bootstrap task on all the repositories
+  rake bootstrap:blog       # Clones the blog.cocoapods.org repository and its dependencies
+  rake bootstrap:cocoadocs  # Clones the cocoadocs.org repository and its dependencies
+  rake bootstrap:cocoapods  # Clones the cocoapods.org repository and its dependencies
+  rake bootstrap:feeds      # Clones the feeds.cocoapods.org repository and its dependencies
+  rake bootstrap:humus      # Clones the Humus repository and its dependencies
+  rake bootstrap:metrics    # Clones the metrics.cocoapods.org repository and its dependencies
+  rake bootstrap:search     # Clones the search.cocoapods.org repository and its dependencies
+  rake bootstrap:trunk      # Clones the trunk.cocoapods.org repository and its dependencies 
+  rake clone[name]          # Clones the web repositories
+  rake db:create            # Create databases for web properties
+  rake db:drop              # Drop databases for web properties
+  rake db:migrate           # Migrate databases for web properties
+  rake db:reset             # Reset databases for web properties
+  rake install_system_deps  # Installs application dependencies
+  rake issues               # Gets the count of the open issues
+  rake pull                 # Pulls all the repositories & updates their submodules
+  rake spec                 # Run all specs of all the sites
+  rake switch_to_ssh        # Points the origin remote of all the git repos to use the SSH URL
+```
+
+### Getting started
+```sh
+  git clone https://github.com/cocoapods/Strata.git
+  cd Strata
+  bundle install
+  
+  # Downloads all the website repos
+  rake clone
+  
+  # Sets all the website repos up
+  rake bootstrap
+  
+  # Downloads apps ( this can set up your database for you )
+  rake install_system_deps
+```
+
+You are then free to `cd` into the repo that you want to make changes to, and run `rake serve` inside that repo. Best to read the README for that project too, they all have their own constraints and tooling.

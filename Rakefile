@@ -69,12 +69,13 @@ begin
       title "Cloning the website repositories"
       clone_repos(repos)
     else 
-      title "Couldn not find the repo you were looking for"
+      title "Could not find the repo you were looking for"
     end
   end
   
   # Task install_system_deps
   #-----------------------------------------------------------------------------#
+  desc "Installs application dependencies"
   task :install_system_deps do
     title "Installing application dependencies"
     rakefile_repos.each do |dir|
@@ -94,7 +95,7 @@ begin
   #-----------------------------------------------------------------------------#
 
   desc "Runs the Bootstrap task on all the repositories"
-  task :bootstrap_repos, :name do |name|
+  task :bootstrap, :name do |name|
     title "Bootstrapping all the repositories"
     rakefile_repos.each do |dir|
       Dir.chdir(dir) do
