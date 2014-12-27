@@ -1,20 +1,21 @@
 # encoding: utf-8
 
-# @return [Array<String>] The list of the names of the CocoaPods repositories
-#         which are web based.
+# @return [Hash<String>] The list of the names of the CocoaPods repositories
+#         which are web based and their dependencies.
 #
 
-WEB_REPOS = %w[
-  search.cocoapods.org
-  cocoapods.org
-  blog.cocoapods.org
-  trunk.cocoapods.org
-  cocoadocs.org
-  trunk.cocoapods.org-api-doc
-  metrics.cocoapods.org
-  feeds.cocoapods.org
-  shared_resources
-]
+WEB_REPOS = {
+  'search.cocoapods.org' => ['Humus'],
+  'cocoapods.org' => ['Humus'],
+  'blog.cocoapods.org' => [],
+  'trunk.cocoapods.org' => ['Humus'],
+  'cocoadocs.org' => ['Humus'],
+  'trunk.cocoapods.org-api-doc' => [],
+  'metrics.cocoapods.org' => ['Humus'],
+  'feeds.cocoapods.org' => [],
+  # 'shared_resources' => [],
+  'Humus' => []
+}
 
 # @return [Array<String>] The list of the repos which should be cloned by
 #         default.
@@ -22,22 +23,33 @@ WEB_REPOS = %w[
 
 DEFAULT_REPOS = WEB_REPOS
 
-task :default => :status
-
 # Task bootstrap / set-up
 #-----------------------------------------------------------------------------#
 
-desc "Clones all the CocoaPods website repositories"
-task :bootstrap do
-  if system('which bundle')
-    Rake::Task[:clone].invoke
-    Rake::Task[:bootstrap_repos].invoke
-  else
-    $stderr.puts "\033[0;31m" \
-      "[!] Please install the bundler gem manually:\n" \
-      "    $ [sudo] gem install bundler" \
-      "\e[0m"
-    exit 1
+def setup name
+  Rake::Task[:clone].invoke name
+  Rake::Task[:bootstrap_repos].invoke name
+end
+
+namespace :bootstrap do
+  WEB_REPOS.keys.each do |name|
+    short_name = name.split('.').first.downcase
+    
+    desc "Clones the #{name} repository and its dependencies"
+    task short_name do
+      if system('which bundle')
+        WEB_REPOS[name].each do |dependency_name|
+          setup dependency_name
+        end
+        setup name
+      else
+        $stderr.puts "\033[0;31m" \
+          "[!] Please install the bundler gem manually:\n" \
+          "    $ [sudo] gem install bundler" \
+          "\e[0m"
+        exit 1
+      end
+    end
   end
 end
 
@@ -48,10 +60,11 @@ begin
   #-----------------------------------------------------------------------------#
 
   desc "Clones the web repositories"
-  task :clone do
+  task :clone, :name do |name|
     repos = fetch_default_repos
+    repos = repos.find { |repo| repo['name'] == name } if name
     title "Cloning the website repositories"
-    clone_repos(repos)
+    # clone_repos(repos)
   end
   
   # Task install_system_deps
@@ -75,7 +88,7 @@ begin
   #-----------------------------------------------------------------------------#
 
   desc "Runs the Bootstrap task on all the repositories"
-  task :bootstrap_repos do
+  task :bootstrap_repos, :name do |name|
     title "Bootstrapping all the repositories"
     rakefile_repos.each do |dir|
       Dir.chdir(dir) do
@@ -146,7 +159,7 @@ begin
     require 'json'
 
     title 'Fetching open issues'
-    WEB_REPOS.dup.push('Strata').each do |name|
+    WEB_REPOS.keys.dup.push('Strata').each do |name|
       url = "https://api.github.com/repos/CocoaPods/#{name}/issues?state=open&per_page=100"
       response = open(url).read
       issues = JSON.parse(response)
@@ -190,11 +203,14 @@ begin
   desc "Run all specs of all the sites"
   task :spec do
     title "Running specs"
-    WEB_REPOS.reverse.each do |repo|
-      spec = spec(repo)
-      Dir.chdir(repo) do
-        subtitle repo
-        sh 'bundle exec rake spec'
+    WEB_REPOS.keys.reverse.each do |repo|
+      if Dir.exists?(repo)
+        Dir.chdir(repo) do
+          subtitle repo
+          sh 'bundle exec rake spec'
+        end
+      else
+        puts "Skipping running the spec of #{repo} as it is not cloned."
       end
     end
   end
