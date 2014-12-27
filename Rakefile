@@ -314,7 +314,7 @@ def clone_repos(repos)
     if File.exist?(name)
       puts "Already cloned"
     else
-      sh "git clone #{url}"
+      sh "git clone #{url} #{name}"
       
       Dir.chdir(name) do
         sh "bundle install"
