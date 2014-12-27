@@ -26,8 +26,46 @@ DEFAULT_REPOS = WEB_REPOS
 #-----------------------------------------------------------------------------#
 
 def setup name
-  Rake::Task[:clone].invoke name
-  Rake::Task[:bootstrap_repos].invoke name
+  clone name
+  bootstrap name
+end
+
+def bootstrap name = nil
+  strap = ->(dir) do
+    Dir.chdir(dir) do
+      subtitle "Bootstrapping #{dir}"
+      if has_rake_task?('bootstrap')
+        sh "rake --no-search bootstrap"
+      end
+    end
+  end
+  
+  if name
+    title "Bootstrapping the #{name} repository"
+    strap.call(name)
+  else
+    title "Bootstrapping all the repositories"
+    rakefile_repos.each do |dir|
+      strap.call(dir)
+    end
+  end
+
+  disk_usage = `du -h -c -d 0`.split(' ').first
+  puts "\nDisk usage: #{disk_usage}"
+end
+
+def clone name
+  repos = fetch_default_repos
+  if name
+    repos = [repos.find { |repo| repo['name'] == name }]
+  end
+  
+  if repos
+    title "Cloning the website repositories"
+    clone_repos(repos)
+  else 
+    title "Could not find the repo you were looking for"
+  end
 end
 
 namespace :bootstrap do
@@ -60,17 +98,7 @@ begin
 
   desc "Clones the web repositories"
   task :clone, :name do |task, args|
-    repos = fetch_default_repos
-    if args.name
-      repos = [ repos.find { |repo| repo['name'] == args.name } ]
-    end
-    
-    if repos
-      title "Cloning the website repositories"
-      clone_repos(repos)
-    else 
-      title "Could not find the repo you were looking for"
-    end
+    clone(args.name)
   end
   
   # Task install_system_deps
@@ -95,19 +123,8 @@ begin
   #-----------------------------------------------------------------------------#
 
   desc "Runs the Bootstrap task on all the repositories"
-  task :bootstrap, :name do |name|
-    title "Bootstrapping all the repositories"
-    rakefile_repos.each do |dir|
-      Dir.chdir(dir) do
-        subtitle "Bootstrapping #{dir}"
-        if has_rake_task?('bootstrap')
-          sh "rake --no-search bootstrap"
-        end
-      end
-    end
-
-    disk_usage = `du -h -c -d 0`.split(' ').first
-    puts "\nDisk usage: #{disk_usage}"
+  task :bootstrap, :name do |task, args|
+    bootstrap(args.name)
   end
 
 
