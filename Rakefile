@@ -79,8 +79,8 @@ begin
     title "Installing application dependencies"
     rakefile_repos.each do |dir|
       Dir.chdir(dir) do
-        subtitle "Bootstrapping #{dir}"
         if has_rake_task?('install_tools')
+          subtitle "Installing dependencies of #{dir}"
           sh "rake --no-search install_tools"
         end
       end
