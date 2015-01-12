@@ -15,6 +15,7 @@ WEB_REPOS = {
   'metrics.cocoapods.org' => ['Humus'],
   'feeds.cocoapods.org' => [],
   'Humus' => []
+  'guides.cocoapods.org' => [],
 }
 
 # @return [Array<String>] The list of the repos which should be cloned by
