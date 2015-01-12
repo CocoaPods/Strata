@@ -335,10 +335,12 @@ def clone_repos(repos)
     else
       sh "git clone #{url} #{name}"
 
-      # Run the new repo's bundle install
+      # Run the new repo's bootstrap rake task
       Dir.chdir(name) do
-        Bundler.with_clean_env do 
-          system 'bundle install'
+        gem 'bundler'
+        require 'bundler'
+        Bundler.with_clean_env do
+          system 'rake bootstrap'
         end
       end
     end
