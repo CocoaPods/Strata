@@ -41,7 +41,7 @@ def bootstrap name = nil
       end
     end
   end
-  
+
   if name
     title "Bootstrapping the #{name} repository"
     strap.call(name)
@@ -61,11 +61,11 @@ def clone name
   if name
     repos = [repos.find { |repo| repo['name'] == name }]
   end
-  
+
   if repos
     title "Cloning the website repositories"
     clone_repos(repos)
-  else 
+  else
     title "Could not find the repo you were looking for"
   end
 end
@@ -73,7 +73,7 @@ end
 namespace :bootstrap do
   WEB_REPOS.keys.each do |name|
     short_name = name.split('.').first.downcase
-    
+
     desc "Clones the #{name} repository and its dependencies"
     task short_name do
       if system('which bundle')
@@ -102,7 +102,7 @@ begin
   task :clone, :name do |task, args|
     clone(args.name)
   end
-  
+
   # Task install_system_deps
   #-----------------------------------------------------------------------------#
   desc "Installs application dependencies"
@@ -120,7 +120,7 @@ begin
     disk_usage = `du -h -c -d 0`.split(' ').first
     puts "\nDisk usage: #{disk_usage}"
   end
-  
+
   # Task bootstrap_repos
   #-----------------------------------------------------------------------------#
 
