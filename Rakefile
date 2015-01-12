@@ -5,17 +5,17 @@
 #
 
 WEB_REPOS = {
-  'search.cocoapods.org' => ['Humus'],
-  'cocoapods.org' => ['Humus'],
   'blog.cocoapods.org' => [],
-  'trunk.cocoapods.org' => ['Humus'],
-  'cocoadocs.org' => [],
   'cocoadocs-api' => ['Humus'],
-  'trunk.cocoapods.org-api-doc' => [],
-  'metrics.cocoapods.org' => ['Humus'],
+  'cocoadocs.org' => [],
+  'cocoapods.org' => ['Humus'],
   'feeds.cocoapods.org' => [],
-  'Humus' => []
   'guides.cocoapods.org' => [],
+  'Humus' => [],
+  'metrics.cocoapods.org' => ['Humus'],
+  'search.cocoapods.org' => ['Humus'],
+  'trunk.cocoapods.org' => ['Humus'],
+  'trunk.cocoapods.org-api-doc' => [],
 }
 
 # @return [Array<String>] The list of the repos which should be cloned by
