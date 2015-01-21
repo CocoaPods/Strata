@@ -47,3 +47,9 @@ Commands it offers:
 ```
 
 You are then free to `cd` into the repo that you want to make changes to, and run `rake serve` inside that repo. Best to read the README for that project too, they all have their own constraints and tooling.
+
+### Making a Pull Request
+
+Let's say you want to make a change specifically on cocoapods.org. You've already set up your copy of the site, and you've made a change. 
+
+You're going to want to make a fork of [our cocoapods.org repo](https://github.com/cocoapods/cocoapods.org/) and then add that as a new remote to the one inside Strata. e.g `git remote add orta https://github.com/orta/cocoapods.org`. You can then push your commit to your fork with `git push orta master` and create a PR from your fork.
