@@ -41,12 +41,21 @@ Commands it offers:
   
   # Sets all the website repos up
   rake bootstrap
-  
+
   # Downloads apps ( this can set up your database for you )
   rake install_system_deps
 ```
 
-You are then free to `cd` into the repo that you want to make changes to, and run `rake serve` inside that repo. Best to read the README for that project too, they all have their own constraints and tooling.
+
+If the `bootstrap` command fails for a given project/repo, you may need to `cd` into that repo and run `bundle install` followed by `rake bootstrap` inside that directory.
+
+To initialize the database, `cd` into the `Humus` directory within Strata and run `rake db:bootstrap`.
+
+
+### Serving a project
+
+Once everything is set up, you can `cd` into the repo that you want to make changes to, and run `rake serve` inside that repo. Best to read the README for that project too, they all have their own constraints and tooling.
+
 
 ### Making a Pull Request
 
