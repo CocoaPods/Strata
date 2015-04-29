@@ -73,6 +73,13 @@ def clone name
 end
 
 namespace :bootstrap do
+  desc "Bootstrap all CocoaPods repositories."
+  task :all do
+    bootstrap
+  end
+  
+  # Add a task for each repo.
+  #
   WEB_REPOS.keys.each do |name|
     short_name = name.split('.').first.downcase
 
@@ -126,9 +133,15 @@ begin
   # Task bootstrap_repos
   #-----------------------------------------------------------------------------#
 
-  desc "Runs the Bootstrap task on all the repositories"
+  desc "Runs the Bootstrap task on a specific repository"
   task :bootstrap, :name do |task, args|
-    bootstrap(args.name)
+    if name = args.name
+      bootstrap(name)
+    else
+      Bundler.with_clean_env do
+        puts `bundle install`
+      end
+    end
   end
 
 
