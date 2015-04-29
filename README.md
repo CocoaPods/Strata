@@ -40,7 +40,7 @@ Commands it offers:
   rake clone
   
   # Sets all the website repos up
-  rake bootstrap
+  rake bootstrap:all
 
   # Downloads apps ( this can set up your database for you )
   rake install_system_deps
