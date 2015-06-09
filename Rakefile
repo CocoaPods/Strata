@@ -14,6 +14,7 @@ WEB_REPOS = {
   'Humus' => [],
   'metrics.cocoapods.org' => ['Humus'],
   'search.cocoapods.org' => ['Humus'],
+  'stats.cocoapods.org' => [],
   'trunk.cocoapods.org' => ['Humus'],
   'trunk.cocoapods.org-api-doc' => [],
 }
