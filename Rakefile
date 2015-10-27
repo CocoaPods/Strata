@@ -78,7 +78,7 @@ namespace :bootstrap do
   task :all do
     bootstrap
   end
-  
+
   # Add a task for each repo.
   #
   WEB_REPOS.keys.each do |name|
@@ -252,6 +252,24 @@ begin
         end
       else
         puts "Skipping running the spec of #{repo} as it is not cloned."
+      end
+    end
+  end
+
+  desc "Update the shared submodule"
+  task :update_shared do
+    shared_resources_repos.each do |repo|
+      sha = nil
+      Dir.chdir(repo + 'shared') do
+        sh "git checkout master && git pull origin master"
+        sha = `git rev-parse HEAD`
+      end
+      Dir.chdir(repo) do
+        if `git diff --quiet HEAD` && !$?.success?
+          message = "[Shared] Update to CocoaPods/shared_resources@#{sha}"
+          sh "git add shared && git commit -m '#{message}'"
+          subtitle "Updated the shared submodule in #{repo}"
+        end
       end
     end
   end
@@ -438,6 +456,12 @@ end
 #
 def rakefile_repos
   Dir['*/Rakefile'].map { |file| File.dirname(file) }
+end
+
+# @return [Array<Pathname>] All the directories that contains the shared submodule.
+#
+def shared_resources_repos
+  Pathname.glob('*/shared').map(&:dirname)
 end
 
 # @return [Array<String>]
