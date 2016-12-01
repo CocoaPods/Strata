@@ -38,9 +38,7 @@ def bootstrap name = nil
     Dir.chdir(dir) do
       subtitle "Bootstrapping #{dir}"
       if has_rake_task?('bootstrap')
-        Bundler.with_clean_env do
-          sh "rake --no-search bootstrap"
-        end
+        sh "rake --no-search bootstrap"
       end
     end
   end
@@ -139,9 +137,7 @@ begin
     if name = args.name
       bootstrap(name)
     else
-      Bundler.with_clean_env do
-        puts `bundle install`
-      end
+      puts `bundle install`
     end
   end
 
