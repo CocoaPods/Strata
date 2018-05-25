@@ -29,7 +29,7 @@ DEFAULT_REPOS = WEB_REPOS
 #-----------------------------------------------------------------------------#
 
 def setup name
-  clone name
+  clone_repo name
   bootstrap name
 end
 
@@ -59,7 +59,7 @@ def bootstrap name = nil
   puts "\nDisk usage: #{disk_usage}"
 end
 
-def clone name
+def clone_repo name
   repos = fetch_default_repos
   if name
     repos = [repos.find { |repo| repo['name'] == name }]
@@ -110,7 +110,7 @@ begin
 
   desc "Clones the web repositories"
   task :clone, :name do |task, args|
-    clone(args.name)
+    clone_repo(args.name)
   end
 
   # Task install_system_deps
@@ -140,7 +140,7 @@ begin
       bootstrap(name)
     else
       Bundler.with_clean_env do
-        puts `bundle install`
+        sh 'bundle install'
       end
     end
   end
