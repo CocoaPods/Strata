@@ -340,7 +340,7 @@ def fetch_repos
     repos.concat(JSON.parse(response))
 
     link = Array(file.meta['link']).first
-    if match = link.match(/<(.*)>; rel="next"/)
+    if match = link.match(/<([^<]*)>; rel="next"/)
       url = match.captures.first
     else
       break
