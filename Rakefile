@@ -331,15 +331,16 @@ end
 def fetch_repos
   require 'json'
   require 'open-uri'
+  require 'net/http'
   title "Fetching repositories list"
   url = 'https://api.github.com/orgs/CocoaPods/repos?type=public'
   repos = []
   loop do
-    file = open(url)
-    response = file.read
-    repos.concat(JSON.parse(response))
+    response = Net::HTTP.get_response(URI(url))
+    body = response.body
+    repos.concat(JSON.parse(body))
 
-    link = Array(file.meta['link']).first
+    link = Array(response['link']).first
     if match = link.match(/<([^<]*)>; rel="next"/)
       url = match.captures.first
     else
