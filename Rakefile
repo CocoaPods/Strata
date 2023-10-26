@@ -302,6 +302,74 @@ begin
 
   end
 
+  desc 'Prints the repositories with un-merged branches or a dirty working copy and lists the gems with commits after the last release.'
+  task :status do
+    title 'Checking status'
+
+    dirs_not_in_master = repos.reject do |dir|
+      Dir.chdir(dir) do
+        branch = `git rev-parse --abbrev-ref HEAD`.chomp
+        %w(master develop).include?(branch)
+      end
+    end
+
+    unless dirs_not_in_master.empty?
+      subtitle 'Repositories not in master/develop branch'
+      puts "- #{dirs_not_in_master.join("\n- ")}"
+    end
+
+    dirs_with_unmerged_branches = repos.map do |dir|
+      Dir.chdir(dir) do
+        base_branch = default_branch
+        branches = git_branch_list(" --no-merged #{base_branch}")
+        branches.reject! { |b| b.end_with?('-stable') }
+        "#{dir}: #{branches.join(', ')}" unless branches.empty?
+      end
+    end.compact
+
+    unless dirs_with_unmerged_branches.empty?
+      subtitle 'Repositories with un-merged branches'
+      puts "- #{dirs_with_unmerged_branches.join("\n- ")}"
+    end
+
+    dirty_dirs = repos.reject do |dir|
+      Dir.chdir(dir) do
+        `git diff --quiet`
+        exit_status = $?.exitstatus
+        `git diff --cached --quiet`
+        cached_exit_status = $?.exitstatus
+        exit_status.zero? && cached_exit_status.zero?
+      end
+    end
+
+    unless dirty_dirs.empty?
+      subtitle 'Repositories with a dirty working copy'
+      puts "- #{dirty_dirs.join("\n- ")}"
+    end
+
+    subtitle 'Gems with releases'
+    has_pending_releases = false
+    name_commits_tags = gem_dirs.map do |dir|
+      tag = last_tag(dir)
+      if tag != ''
+        Dir.chdir(dir) do
+          # subtract 2 to account for the empty changelog section commit & merge of tag
+          commits_since_last_tag = `git rev-list #{tag}..HEAD --count`.chomp.to_i - 2
+          commits_since_last_tag = 0 if commits_since_last_tag <= 0
+          unless commits_since_last_tag.zero?
+            has_pending_releases = true
+            [dir, commits_since_last_tag, tag]
+          end
+        end
+      end
+    end
+    name_commits_tags = name_commits_tags.compact.sort_by { |value| value[1] }.reverse
+    name_commits_tags.each do |name_commits_tag|
+      puts "\n- #{name_commits_tag[0]}\n  #{name_commits_tag[1]} commits since #{name_commits_tag[2]}"
+    end
+
+    puts 'All the gems are up to date' unless has_pending_releases
+  end
 rescue LoadError
   $stderr.puts "\033[0;31m" \
     '[!] Some Rake tasks haven been disabled because the environment' \
