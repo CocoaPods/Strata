@@ -6,15 +6,12 @@
 
 WEB_REPOS = {
   'blog.cocoapods.org' => [],
-  'cocoadocs-api' => ['Humus'],
-  'cocoadocs.org' => [],
   'cocoapods.org' => ['Humus'],
   'feeds.cocoapods.org' => [],
   'guides.cocoapods.org' => [],
   'Humus' => [],
   'metrics.cocoapods.org' => ['Humus'],
   'search.cocoapods.org' => ['Humus'],
-  'stats.cocoapods.org' => [],
   'trunk.cocoapods.org' => ['Humus'],
   'trunk.cocoapods.org-api-doc' => [],
 }
